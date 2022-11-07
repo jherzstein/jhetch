@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+WHITE="\x1B[37m"
+RED="\033[1;31m"
+BROWN=""
+GREEN="\x1B[32m"
+BOLD="\x1B[1m"
+RESET="\x1B[0m"
+
+
+#os=$(grep -m1 "NAME=" < /etc/os-release | cut -d '"' -f 2) #slower but more robust
+os=$(awk 'NR == 1 {gsub("\"", " "); printf "%s %s %s \n", $2, $3, $4}' /etc/os-release) # faster but maybe less robust
+host=$(cat /sys/devices/virtual/dmi/id/product_version)
+kernel=$(uname -a | awk '{print $3}')
+uptime=$(uptime -p | cut -c 4-) 
+shell=$(basename $SHELL)
+#font=$(fc-match | cut -d '"' -f2)
+packages=$(dpkg --get-selections | wc -l)
+
+info() {
+    cat <<EOF
+${GREEN}${BOLD}$USER@$HOSTNAME${RESET}
+${RED}${BOLD}os${RESET}     $os		
+${RED}${BOLD}host${RESET}   $host	
+${RED}${BOLD}kernel${RESET} $kernel	
+${RED}${BOLD}sh${RESET}     $shell	
+${RED}${BOLD}up${RESET}     $uptime	
+${RED}${BOLD}pkgs${RESET}   $packages
+EOF
+}
+
+gnu="$WHITE  ,= ,-_-. =. $RESET
+$WHITE ((_/)o o(\_)) $RESET
+$WHITE  \`-'(. .)\`-'$RESET
+$WHITE      \_/ $RESET 
+$WHITE 	    $RESET
+$WHITE 	    $RESET
+$WHITE	$RESET
+
+"
+
+canadaeh="$RED⠀⠀⠀⠀⠀⠀⠀⣶⣄⠀⠀⢀          $RESET⠀⠀⠀⠀⠀
+$RED⠀⠀⠀⠀⠀⠀⢸⣿⣿⣷⣴⣿⡄⠀⠀⠀⠀⠀⢀⡀ $RESET⠀⠀⠀⠀⠀
+$RED⠀⠀⠀⠀⠰⣶⣾⣿⣿⣿⣿⣿⡇⠀⢠⣷⣤⣶⣿⡇⠀$RESET⠀⠀⠀⠀⠀
+$RED⠀⠀⠀⠀⠀⠙⣿⣿⣿⣿⣿⣿⣿⣀⣿⣿⣿⣿⣿⣧⣀$RESET⠀⠀⠀⠀⠀
+$RED⠀⠀⠀⣷⣦⣀⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃$RESET⠀⠀⠀⠀⠀
+$RED⢲⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⠀$RESET⠀⠀⠀⠀⠀
+$RED⠀⠙⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠁⠀⠀$RESET⠀⠀⠀⠀⠀
+$RED⠀⠚⠻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠿⠂⠀⠀$RESET⠀⠀⠀⠀⠀
+$RED⠀⠀⠀⠀⠀⠉⠙⢻⣿⣿⡿⠛⠉⡇⠀⠀⠀⠀⠀⠀⠀$RESET⠀⠀⠀⠀⠀
+$RED⠀⠀⠀⠀⠀⠀⠀⠘⠋⠁⠀⠀⠀⠸⡄⠀⠀⠀⠀⠀⠀$RESET⠀⠀⠀⠀⠀
+$RED⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢳⡀⠀⠀⠀⠀⠀$RESET⠀⠀⠀⠀⠀
+
+"
+
+minicanadaeh="$RED             $RESET
+$RED     _/\_    $RESET
+$RED   __\  /__  $RESET
+$RED  <_      _> $RESET 
+$RED    |/ )\|   $RESET
+$RED      /      $RESET
+$RED             $RESET
+
+"
+case "$(echo $d)" in
+
+    *) ascii="$minicanadaeh" ;;
+esac
+
+paste <(printf "%b" "$ascii") <(printf "%b" "$(info)") | cat
+exit 0
+info
